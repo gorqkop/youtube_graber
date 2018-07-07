@@ -3,14 +3,9 @@ import json
 import csv
 
 from apiclient.errors import HttpError
-from apiclient.discovery import build
+from youtube import BaseYoutube
 
-class youtube_grabber:
-    def __init__(self):
-        self.YOUTUBE_API_SERVICE_NAME = "youtube"
-        self.YOUTUBE_API_VERSION = "v3"
-        self.DEVELOPER_KEY = 'AIzaSyAjLsHi5V_q99YXOYladt_nSqxSHgSmlj0'
-        self.YOUTUBE = build(self.YOUTUBE_API_SERVICE_NAME, self.YOUTUBE_API_VERSION, developerKey=self.DEVELOPER_KEY)
+class youtube_grabber(BaseYoutube):
 
     def get_comments(self, video_id, path=''):
         self.comments = []
@@ -29,7 +24,6 @@ class youtube_grabber:
             csvwriter.writerow(json.loads(comment))
         output_file.close()
         print("Total comments: %d" % len(self.comments))
-
 
     def __get_comment_threads(self, video_id):
         threads = []
