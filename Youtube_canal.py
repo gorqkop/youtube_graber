@@ -29,7 +29,7 @@ class youtube_grabber:
 
         for channel in channels_response['items']:
             chan_id = channel['contentDetails']['relatedPlaylists']['uploads']
-            return chan_id
+            yield chan_id
 
     def list_my_uploaded_videos(self, chan_id):
         playlistitems_list_request = self.YOUTUBE.playlistItems().list(playlistId=chan_id, part='snippet')
