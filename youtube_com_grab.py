@@ -5,8 +5,8 @@ import csv
 from apiclient.errors import HttpError
 from youtube import BaseYoutube
 
-class youtube_grabber(BaseYoutube):
 
+class YoutubeCommentsGrabber(BaseYoutube):
     def get_comments(self, video_id, path=''):
         self.comments = []
         try:
@@ -16,11 +16,13 @@ class youtube_grabber(BaseYoutube):
         except HttpError as e:
             print("An HTTP error %d occurred:\n%s" % (e.resp.status, e.content))
 
-        output_file = open(os.path.join(path, '%s.csv' % video_id), 'w')
+        if not os.path.exists(path):
+            os.makedirs(path)
+
+        output_file = open(os.path.join(path, '%s.csv' % video_id), 'w', encoding='utf-8', errors="ignore")
         csvwriter = csv.writer(output_file, delimiter='\t')
         csvwriter.writerow(['Text', 'OriginalText', 'Data', 'Like', 'Name', 'IdVideo', 'IdComment', 'IdInnerComment'])
         for comment in self.comments:
-            print(comment)
             csvwriter.writerow(json.loads(comment))
         output_file.close()
         print("Total comments: %d" % len(self.comments))
@@ -90,5 +92,6 @@ class youtube_grabber(BaseYoutube):
         info = json.dumps(info, ensure_ascii=False)
         self.comments.append(info)
 
+
 if __name__ == "__main__":
-    youtube_grabber().get_comments('5UmMcLLlhsw')
+    YoutubeCommentsGrabber().get_comments('ovCT_Sk1TXE')
