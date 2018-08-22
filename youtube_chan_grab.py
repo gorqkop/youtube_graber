@@ -6,12 +6,12 @@ from youtube import BaseYoutube
 
 
 class YoutubeChannelGrabber(BaseYoutube):
-    def get_video_info(self, channel_id, path=''):
+    def get_channel_info(self, channel_id, path=''):
         self.channel_info = []
         chan_id = self.get_my_uploads_list(channel_id)
         self.list_my_uploaded_videos(chan_id)
 
-        if not os.path.exists(path):
+        if path and not os.path.exists(path):
             os.makedirs(path)
 
         output_file = open(os.path.join(path, '%s.csv' % channel_id), 'w', encoding='utf-8', newline='')
@@ -38,9 +38,9 @@ class YoutubeChannelGrabber(BaseYoutube):
                 publise_time = playlist_item['snippet']['publishedAt']
                 AUT = json.dumps([title, video_id, publise_time], ensure_ascii=False)
                 self.channel_info.append(AUT)
-            playlistitems_list_request = self.YOUTUBE.playlistItems().list_next(
+                playlistitems_list_request = self.YOUTUBE.playlistItems().list_next(
                 playlistitems_list_request, playlistitems_list_response)
 
 
 if __name__ == "__main__":
-    YoutubeChannelGrabber().get_video_info('UCa2DyezQaSMK81FbYkHZM_g')
+    YoutubeChannelGrabber().get_channel_info('UCSElpBNRLrQMqGJncHQWc2Q')

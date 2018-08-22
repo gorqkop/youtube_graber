@@ -9,16 +9,16 @@ from youtube import BaseYoutube
 class YoutubeCommentsGrabber(BaseYoutube):
     def get_comments(self, video_id, path=''):
         self.comments = []
+        if not os.path.exists(path):
+            os.makedirs(path)
         try:
             video_comment_threads = self.__get_comment_threads(video_id)
             for thread in video_comment_threads:
                 self.__get_comments(thread["id"], video_id)
         except HttpError as e:
             print("An HTTP error %d occurred:\n%s" % (e.resp.status, e.content))
-
-        if not os.path.exists(path):
-            os.makedirs(path)
-
+            with open(os.path.join(path, '.errors'), 'w', encoding='utf-8') as f:
+                f.write(video_id+'\n')
         output_file = open(os.path.join(path, '%s.csv' % video_id), 'w', encoding='utf-8', errors="ignore")
         csvwriter = csv.writer(output_file, delimiter='\t')
         csvwriter.writerow(['Text', 'OriginalText', 'Data', 'Like', 'Name', 'IdVideo', 'IdComment', 'IdInnerComment'])
